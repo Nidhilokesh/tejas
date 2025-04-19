@@ -28,7 +28,6 @@ def load_user(user_id):
 # ——— Landing Route ———
 @app.route('/')
 def landing():
-    # If no users exist, force signup first
     if UserAuth.query.count() == 0:
         return redirect(url_for('signup'))
     return redirect(url_for('login'))
@@ -44,18 +43,15 @@ def signup():
         sex      = request.form['sex']
         email    = request.form['email']
 
-        # Prevent duplicate usernames
         if UserAuth.query.filter_by(username=username).first():
             flash('Username already exists.', 'error')
             return redirect(url_for('signup'))
 
-        # 1) Create and commit the credential record
         user = UserAuth(username=username)
         user.set_password(password)
         db.session.add(user)
-        db.session.commit()    # new_user.id is now assigned
+        db.session.commit()
 
-        # 2) Create and commit the profile record, linking to user.id
         profile = UserProfile(
             user_id=user.id,
             name=name,
@@ -97,7 +93,6 @@ def logout():
 @app.route('/chat')
 @login_required
 def chat():
-    # Initialize chat state if needed
     if 'history' not in session:
         session['history'] = [
             ('bot', 'Which stock(s) are you looking for? For example: AAPL, TSLA, MSFT.')
@@ -108,7 +103,7 @@ def chat():
 @app.route('/chat', methods=['POST'])
 @login_required
 def chat_post():
-    msg    = request.json.get("message")
+    msg     = request.json.get("message")
     history = session.get("history", [])
     store   = session.get("store", {})
     stage   = session.get("stage", "ask_ticker")
@@ -130,7 +125,6 @@ def chat_post():
     elif stage == "ask_dates":
         try:
             start, end = [d.strip() for d in msg.split("to")]
-            store['start'], store['end'] = start, end
             df = load_stock_data(store['ticker'], start, end)
             if df.empty:
                 bot_response("No data found for that ticker and date range.")
@@ -144,11 +138,7 @@ def chat_post():
     elif stage == "ask_model":
         choice = msg.lower()
         available = list(models.keys())
-
-        if choice == "all":
-            sel = available
-        else:
-            sel = [m for m in available if m in choice]
+        sel = available if choice == "all" else [m for m in available if m in choice]
 
         if not sel:
             bot_response("Please pick from: " + ", ".join(available) + " or ALL.")
@@ -156,7 +146,7 @@ def chat_post():
             store['models'] = sel
             results = {}
             for model_name in sel:
-                res = train_and_predict(model_name, store['df'])  # No forecast yet
+                res = train_and_predict(model_name, store['df'])
                 results[model_name] = res
                 bot_response(f"**{model_name.upper()}** → RMSE: {res['rmse']}, R²: {res['r2']}")
             store['results'] = results
@@ -168,21 +158,31 @@ def chat_post():
         from io import StringIO
         df = pd.read_json(StringIO(store['df']), orient="split")
 
-        if isinstance(df.columns[0], tuple):
-            df.columns = pd.MultiIndex.from_tuples(df.columns)
-
-        res = store.get('results', {})
+        # Flatten column tuples → simple names
+        if isinstance(df.columns, pd.MultiIndex):
+            df.columns = df.columns.get_level_values(0)
+        elif isinstance(df.columns[0], tuple):
+            df.columns = [c[0] for c in df.columns]
 
         if "raw" in text:
-            bot_response("Here’s your data head:")
-            bot_response(df.head().to_string())
+            head_df    = df.head()
+            table_html = head_df.to_html(
+                index=False,
+                border=0,
+                classes="raw-data-table"
+            )
+            bot_response("Here’s your data preview:")
+            bot_response(table_html)
             bot_response("Anything else? Charts or forecast?")
+
         elif "chart" in text:
             bot_response("Generating charts for your data. Check the chart area below!")
             bot_response("Want a future forecast?")
+
         elif "future" in text:
             bot_response("How many months ahead?")
             stage = "ask_horizon"
+
         else:
             bot_response("I can show you ‘raw data’, ‘charts’, or ‘future forecast’.")
 
@@ -191,27 +191,20 @@ def chat_post():
             months = int(msg)
             bot_response(f"Predicting next {months} months…")
 
-            df_json = store['df']
             results = {}
-
             for model_name in store['models']:
-                res = train_and_predict(model_name, df_json, future_months=months)
+                res = train_and_predict(model_name, store['df'], future_months=months)
                 results[model_name] = res
 
                 forecast_msg = f"**{model_name.upper()} Forecast**:\n" + "\n".join(
                     [f"{date}: ${price:.2f}" for date, price in zip(res['future_dates'], res['future_preds'])]
                 )
                 bot_response(forecast_msg)
-            # ─── store the forecasts so /chart_data can see them ─────────────────
+
             store['results'] = results
             session['store'] = store
 
-            # ─── tell the front‐end to fetch & draw the chart ────────────────────
             bot_response("Generating charts for your forecast. Check the chart area below!")
-
-
-            # 🔥 Store the updated results with forecasts
-            store['results'] = results
             bot_response("All done! Anything else?")
             stage = "ask_output"
 
@@ -222,11 +215,9 @@ def chat_post():
         bot_response("Oops, something went wrong. Let’s start over. Which stock are you interested in?")
         stage = "ask_ticker"
 
-    # Update session state
     session["history"] = history
     session["store"]   = store
     session["stage"]   = stage
-
     return jsonify({"history": history})
 
 # ——— Chart Data Endpoint ———
@@ -239,13 +230,9 @@ def chart_data():
     from io import StringIO
     df = pd.read_json(StringIO(session["store"]["df"]), orient="split")
 
-    # Flatten MultiIndex columns if needed
     if isinstance(df.columns, pd.MultiIndex):
         ticker = df.columns.get_level_values(1)[0]
-        flat = pd.DataFrame()
-        for col_type in ['Open', 'High', 'Low', 'Close', 'Volume']:
-            if (col_type, ticker) in df.columns:
-                flat[col_type] = df[(col_type, ticker)]
+        flat = pd.DataFrame({col: df[(col, ticker)] for col in ['Open','High','Low','Close','Volume']})
         df = flat
 
     chart_data = create_chart_data(df, session["store"]["results"])
