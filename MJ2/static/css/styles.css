@@ -1,14 +1,31 @@
-/* styles.css */
+/* Enhanced styles.css with new color theme */
+:root {
+    --primary-color: #6366f1;       /* Indigo */
+    --primary-hover: #4f46e5;       /* Darker indigo */
+    --secondary-color: #ec4899;     /* Pink accent */
+    --dark-color: #1e1b4b;          /* Deep indigo */
+    --light-color: #f5f3ff;         /* Very light indigo */
+    --gray-color: #e5e7eb;
+    --text-color: #374151;
+    --border-radius: 10px;
+    --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --gradient-bg: linear-gradient(120deg, #6366f1, #8b5cf6);
+    --chat-bg: #f5f3ff;
+    --user-msg-bg: #e0e7ff;
+    --bot-msg-bg: #ffffff;
+    --card-hover: rgba(99, 102, 241, 0.05);
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
-    background-color: #f5f5f7;
-    color: #333;
+    background-color: #fbfaff;
+    color: var(--text-color);
     line-height: 1.6;
 }
 
@@ -18,24 +35,78 @@ body {
     padding: 20px;
 }
 
+/* Top Navigation */
+.top-nav {
+    background: var(--gradient-bg);
+    color: white;
+    padding: 12px 30px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.user-info {
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-info i {
+    font-size: 1.5rem;
+}
+
+.logout-btn {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Header */
 header {
     display: flex;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #e0e0e0;
-    margin-bottom: 20px;
+    flex-direction: column;
+    text-align: center;
+    padding: 30px 0;
+    margin-bottom: 30px;
+    background: var(--light-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
 }
 
 .logo {
-    font-size: 2rem;
-    margin-right: 15px;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
 }
 
 header h1 {
-    font-weight: 600;
-    color: #333;
+    font-weight: 700;
+    color: var(--dark-color);
+    font-size: 2.5rem;
+    letter-spacing: -1px;
+    background: var(--gradient-bg);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
+.tagline {
+    color: #6b7280;
+    font-size: 1.1rem;
+}
+
+/* Layout */
 .main-content {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
@@ -43,166 +114,485 @@ header h1 {
     margin-bottom: 30px;
 }
 
-.sidebar {
+/* Cards */
+.card {
     background-color: white;
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(99, 102, 241, 0.1);
 }
 
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+    background: var(--gradient-bg);
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+}
+
+.card-header i {
+    font-size: 1.2rem;
+}
+
+.card-header h3 {
+    font-weight: 600;
+    margin: 0;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+/* How-to Section */
 .how-to ol {
-    padding-left: 20px;
+    padding-left: 25px;
     margin: 10px 0;
 }
 
-.how-to h3, .popular-tickers h3 {
-    margin-bottom: 10px;
-    font-weight: 600;
-    color: #444;
+.how-to li {
+    margin-bottom: 8px;
+    position: relative;
 }
 
+.how-to li::marker {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Ticker Buttons */
 .ticker-buttons {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    gap: 10px;
 }
 
 .ticker-buttons button {
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 8px;
+    background-color: white;
+    border: 1px solid var(--primary-color);
+    border-radius: 6px;
+    padding: 10px;
     cursor: pointer;
     transition: all 0.2s;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: var(--primary-color);
 }
 
 .ticker-buttons button:hover {
-    background-color: #e0e0e0;
+    background-color: var(--primary-color);
+    color: white;
 }
 
+.ticker-buttons button i {
+    font-size: 1.1rem;
+}
+
+/* Chat Area */
 .chat-area {
     background-color: white;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     display: flex;
     flex-direction: column;
-    height: 500px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    height: 600px;
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.chat-header {
+    background: var(--gradient-bg);
+    color: white;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-header i {
+    font-size: 1.3rem;
 }
 
 .chat-messages {
     flex: 1;
     overflow-y: auto;
     padding: 15px;
+    background-color: var(--chat-bg);
+    background-image: 
+        radial-gradient(rgba(99, 102, 241, 0.1) 2px, transparent 2px),
+        radial-gradient(rgba(99, 102, 241, 0.1) 2px, transparent 2px);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
 }
 
 .you-message, .bot-message {
-    margin-bottom: 12px;
-    padding: 10px;
-    border-radius: 8px;
-    max-width: 80%;
+    display: flex;
+    margin-bottom: 20px;
+    max-width: 95%;
 }
 
 .you-message {
-    background-color: #e1f5fe;
     margin-left: auto;
+    flex-direction: row-reverse;
 }
 
-.bot-message {
-    background-color: #f5f5f7;
+.message-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin: 0 10px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.you-message .message-avatar {
+    background: var(--gradient-bg);
+}
+
+.bot-message .message-avatar {
+    background-color: var(--secondary-color);
+}
+
+.message-content {
+    background-color: var(--bot-msg-bg);
+    border-radius: 18px;
+    padding: 12px 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    position: relative;
+    max-width: calc(100% - 60px);
+}
+
+.you-message .message-content {
+    background-color: var(--user-msg-bg);
+    border-top-right-radius: 0;
+}
+
+.bot-message .message-content {
+    border-top-left-radius: 0;
+}
+
+.message-header {
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.message-body {
+    word-wrap: break-word;
+}
+
+.message-body p {
+    margin-bottom: 10px;
+}
+
+.message-body p:last-child {
+    margin-bottom: 0;
 }
 
 .chat-input {
     display: flex;
-    border-top: 1px solid #e0e0e0;
-    padding: 10px;
+    padding: 15px;
+    background-color: white;
+    border-top: 1px solid var(--gray-color);
 }
 
 .chat-input input {
     flex: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 12px 15px;
+    border: 1px solid var(--gray-color);
+    border-radius: 25px;
     margin-right: 10px;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.chat-input input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
 .chat-input button {
-    background-color: #0078d7;
+    background: var(--gradient-bg);
     color: white;
     border: none;
-    border-radius: 4px;
-    padding: 0 20px;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-.metrics {
-    padding: 10px 0;
+.chat-input button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-.metric-box {
-    margin-bottom: 20px;
+.chat-input button:active {
+    transform: scale(0.95);
+}
+
+.chat-input button i {
+    font-size: 1.2rem;
+}
+
+/* Metrics */
+.metrics .metric-box {
+    background-color: rgba(99, 102, 241, 0.05);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(99, 102, 241, 0.1);
 }
 
 .metric-box h4 {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     font-weight: 600;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .metrics-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap: 12px;
 }
 
 .metric {
     text-align: center;
-    padding: 8px;
-    background-color: #f0f0f0;
-    border-radius: 6px;
+    padding: 12px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    border: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+.metric:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    background-color: var(--card-hover);
 }
 
 .metric-value {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #0078d7;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    background: var(--gradient-bg);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .metric-label {
-    font-size: 0.8rem;
-    color: #666;
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 30px 20px;
+    color: #9ca3af;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    opacity: 0.5;
+}
+
+/* Chart Section */
+.chart-section {
+    margin-bottom: 40px;
 }
 
 .chart-container {
     background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    height: 400px;
-    position: relative;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    border: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+.chart-header {
+    background: var(--gradient-bg);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.chart-header h3 {
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .chart-controls {
     display: flex;
-    justify-content: flex-end;
-    margin-bottom: 15px;
+    align-items: center;
+    gap: 15px;
+}
+
+.select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.select-wrapper i {
+    position: absolute;
+    left: 10px;
+    color: #6b7280;
 }
 
 .chart-controls select {
-    padding: 6px 12px;
-    margin-right: 10px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
+    padding: 10px 15px 10px 35px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-size: 0.95rem;
+    color: white;
+    appearance: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    min-width: 180px;
+    transition: all 0.3s;
+}
+
+.chart-controls select:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.chart-controls select option {
+    background-color: white;
+    color: var(--text-color);
 }
 
 .chart-controls button {
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 6px 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    padding: 10px 15px;
+    font-size: 0.95rem;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
 }
 
-#stockChart {
-    width: 100%;
-    height: calc(100% - 40px);
+.chart-controls button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.chart-body {
+    padding: 20px;
+    height: 400px;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px 0;
+    color: #6b7280;
+    border-top: 1px solid var(--gray-color);
+    margin-top: 30px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .main-content {
+        grid-template-columns: 1fr 2fr;
+    }
+    
+    .sidebar.right {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar.right, .sidebar.left {
+        grid-column: auto;
+    }
+    
+    .chat-area {
+        height: 500px;
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .chart-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--light-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-hover);
+}
+
+/* Animation for empty state */
+.empty-state i {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 0.5;
+    }
 }

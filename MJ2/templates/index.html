@@ -3,80 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StockBot</title>
+    <title>StockBot - Stock Market Analysis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <nav>
-        Welcome, {{ user.profile.name }} ({{ user.username }})
-        <a href="{{ url_for('logout') }}">Logout</a>
-      </nav>
+    <nav class="top-nav">
+        <div class="user-info">
+            <i class="fas fa-user-circle"></i>
+            <span>{{ user.profile.name }} ({{ user.username }})</span>
+        </div>
+        <a href="{{ url_for('logout') }}" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </nav>
+    
     <div class="container">
         <header>
-            <div class="logo">📈</div>
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+            </div>
             <h1>StockBot</h1>
+            <p class="tagline">Intelligent Stock Market Analysis & Predictions</p>
         </header>
         
         <div class="main-content">
             <div class="sidebar left">
-                <div class="how-to">
-                    <h3>How to use</h3>
-                    <ol>
-                        <li>Enter a stock ticker symbol</li>
-                        <li>Specify date range (YYYY-MM-DD)</li>
-                        <li>Select prediction model(s)</li>
-                        <li>View charts or get a forecast</li>
-                    </ol>
+                <div class="card how-to">
+                    <div class="card-header">
+                        <i class="fas fa-info-circle"></i>
+                        <h3>How to Use</h3>
+                    </div>
+                    <div class="card-body">
+                        <ol>
+                            <li>Enter a stock ticker symbol</li>
+                            <li>Specify date range (YYYY-MM-DD)</li>
+                            <li>Select prediction model(s)</li>
+                            <li>View charts or get a forecast</li>
+                        </ol>
+                    </div>
                 </div>
                 
-                <div class="popular-tickers">
-                    <h3>Popular Tickers</h3>
-                    <div class="ticker-buttons">
-                        <button onclick="sendTickerMessage('AAPL')">AAPL</button>
-                        <button onclick="sendTickerMessage('GOOGL')">GOOGL</button>
-                        <button onclick="sendTickerMessage('TSLA')">TSLA</button>
-                        <button onclick="sendTickerMessage('MSFT')">MSFT</button>
-                        <button onclick="sendTickerMessage('AMZN')">AMZN</button>
-                        <button onclick="sendTickerMessage('META')">META</button>
+                <div class="card popular-tickers">
+                    <div class="card-header">
+                        <i class="fas fa-star"></i>
+                        <h3>Popular Tickers</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="ticker-buttons">
+                            <button onclick="sendTickerMessage('AAPL')">
+                                <i class="fab fa-apple"></i> AAPL
+                            </button>
+                            <button onclick="sendTickerMessage('GOOGL')">
+                                <i class="fab fa-google"></i> GOOGL
+                            </button>
+                            <button onclick="sendTickerMessage('TSLA')">
+                                <i class="fas fa-car"></i> TSLA
+                            </button>
+                            <button onclick="sendTickerMessage('MSFT')">
+                                <i class="fab fa-microsoft"></i> MSFT
+                            </button>
+                            <button onclick="sendTickerMessage('AMZN')">
+                                <i class="fab fa-amazon"></i> AMZN
+                            </button>
+                            <button onclick="sendTickerMessage('META')">
+                                <i class="fab fa-facebook"></i> META
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
             
             <div class="chat-area">
+                <div class="chat-header">
+                    <i class="fas fa-robot"></i>
+                    <h3>Chat with StockBot</h3>
+                </div>
                 <div class="chat-messages" id="chatMessages">
                     {% for role, message in history %}
                         <div class="{{ role }}-message">
-                            <strong>{{ 'You' if role == 'you' else 'StockBot' }}:</strong> 
-                            <span>{{ message | safe }}</span>
+                            <div class="message-avatar">
+                                {% if role == 'you' %}
+                                    <i class="fas fa-user"></i>
+                                {% else %}
+                                    <i class="fas fa-robot"></i>
+                                {% endif %}
+                            </div>
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <strong>{{ 'You' if role == 'you' else 'StockBot' }}</strong>
+                                </div>
+                                <div class="message-body">
+                                    {{ message | safe }}
+                                </div>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
                 
                 <div class="chat-input">
-                    <input type="text" id="messageInput" placeholder="Ask StockBot...">
-                    <button onclick="sendMessage()">Send</button>
+                    <input type="text" id="messageInput" placeholder="Ask StockBot about stock analysis...">
+                    <button onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
                 </div>
             </div>
             
             <div class="sidebar right">
-                <div class="metrics" id="metricsContainer">
-                    <!-- Metrics will be populated here -->
+                <div class="card metrics" id="metricsContainer">
+                    <div class="card-header">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>Performance Metrics</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Metrics will be populated here -->
+                        <div class="empty-state">
+                            <i class="fas fa-chart-pie"></i>
+                            <p>Select a stock to view metrics</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="chart-container">
-            <div class="chart-controls">
-                <select id="modelSelector" onchange="updateChartView()">
-                    <option value="" disabled selected>Select Model</option>
-                </select>
-                <!-- Toggle button in HTML -->
-                <button id="toggleFutureBtn" onclick="toggleFutureView()">Toggle Future Predictions</button>
+        <div class="chart-section">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-line"></i> Stock Price Analysis</h3>
+                    <div class="chart-controls">
+                        <div class="select-wrapper">
+                            <i class="fas fa-filter"></i>
+                            <select id="modelSelector" onchange="updateChartView()">
+                                <option value="" disabled selected>Select Model</option>
+                            </select>
+                        </div>
+                        <button id="toggleFutureBtn" onclick="toggleFutureView()">
+                            <i class="fas fa-forward"></i> Toggle Future Predictions
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-body">
+                    <canvas id="stockChart"></canvas>
+                </div>
             </div>
-            <canvas id="stockChart"></canvas>
         </div>
+        
+        <footer>
+            <p>&copy; 2025 StockBot. All rights reserved.</p>
+        </footer>
     </div>
     
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
